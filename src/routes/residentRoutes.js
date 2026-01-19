@@ -1,5 +1,5 @@
 const express = require('express')
-const { getResidents, createResident, updateResident, deleteResident } = require('../controllers/resident/resident_controller')
+const { getResidents, createResident, updateResident, deleteResident } = require('../controllers/resident/residentController')
 const upload = require('../middleware/uploadResidentPhoto')
 
 const router = express.Router()
