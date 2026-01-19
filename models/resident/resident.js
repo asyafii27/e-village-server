@@ -46,6 +46,10 @@ module.exports = (sequelize, DataTypes) => {
 				type: DataTypes.STRING,
 				allowNull: false,
 			},
+			formal_foto: {
+				type: DataTypes.STRING,
+				allowNull: true,
+			},
 		},
 		{
 			tableName: 'residents',

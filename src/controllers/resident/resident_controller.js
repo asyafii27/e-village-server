@@ -65,6 +65,11 @@ const createResident = async (req, res) => {
             )
         }
 
+        let formal_foto = null;
+        if (req.file) {
+            formal_foto = `uploads/residents/${req.file.filename}`;
+        }
+
         const resident = await db.Resident.create({
             full_name,
             nik,
@@ -76,6 +81,7 @@ const createResident = async (req, res) => {
             rw,
             village,
             marital_status,
+            formal_foto,
         })
 
         return res.successResponse('Data warga berhasil dibuat', resident, 201)
@@ -91,10 +97,12 @@ const createResident = async (req, res) => {
  * @param {*} res 
  * @returns 
  */
+const fs = require('fs');
+const path = require('path');
 const updateResident = async (req, res) => {
     try {
         const { id } = req.params;
-        const updateData = req.body
+        const updateData = req.body;
 
         const resident = await db.Resident.findByPk(id);
         if (!resident) {
@@ -120,6 +128,16 @@ const updateResident = async (req, res) => {
             }
         }
 
+        if (req.file) {
+            if (resident.formal_foto) {
+                const oldPath = path.join(__dirname, '../../../', resident.formal_foto);
+                if (fs.existsSync(oldPath)) {
+                    fs.unlinkSync(oldPath);
+                }
+            }
+            updateData.formal_foto = `uploads/residents/${req.file.filename}`;
+        }
+
         await resident.update(updateData);
 
         return res.successResponse('Data berhasil diedit', resident, 200);
@@ -127,7 +145,6 @@ const updateResident = async (req, res) => {
         console.error('Error updating resident: ', error);
         return res.errorResponse('Internal Server error', null, 422);
     }
-
 }
 
 /**
@@ -196,10 +213,38 @@ function validateResidentInput(data) {
     return errors;
 }
 
+/**
+ * 
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
+const deleteResident = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const resident = await db.Resident.findByPk(id);
+        if (!resident) {
+            return res.errorResponse('Data warga tidak ditemukan', null, 404);
+        }
+
+        if (resident.formal_foto) {
+            const fotoPath = path.join(__dirname, '../../../', resident.formal_foto);
+            if (fs.existsSync(fotoPath)) {
+                fs.unlinkSync(fotoPath);
+            }
+        }
+        await resident.destroy();
+        return res.successResponse('Data warga berhasil dihapus', null, 200);
+    } catch (error) {
+        console.error('Error deleting resident:', error);
+        return res.errorResponse('Internal server error', null, 500);
+    }
+}
 
 module.exports = {
     getResidents,
     createResident,
-    updateResident
+    updateResident,
+    deleteResident
 }
 
