@@ -23,7 +23,7 @@ const apiRouter = express.Router()
 apiRouter.use('/', authRoutes)
 apiRouter.use('/users', authMiddleware, userRoutes)
 apiRouter.use('/residents', authMiddleware, residentRoutes)
-apiRouter.use('/test-print', authMiddleware, sktmRoutes)
+apiRouter.use('/test-print', sktmRoutes)
 
 app.use('/api', apiRouter)
 
