@@ -12,7 +12,6 @@ const getUsers = async (req, res) => {
       sortDirection: sort_order,
     })
 
-    // Build where clause for global search
     const where = {}
     if (global_search) {
       where[Sequelize.Op.or] = [

@@ -7,6 +7,7 @@ const sktmRoutes = require('./routes/sktmRoutes')
 const authMiddleware = require('./middleware/authMiddleware')
 const apiResponse = require('./middleware/apiResponse')
 const cors = require('cors')
+const path = require('path')
 
 const app = express()
 
@@ -26,6 +27,8 @@ apiRouter.use('/residents', authMiddleware, residentRoutes)
 apiRouter.use('/test-print', sktmRoutes)
 
 app.use('/api', apiRouter)
+
+app.use('/api/uploads', express.static(path.join(__dirname, '../uploads')))
 
 const PORT = process.env.PORT || 3000
 app.listen(PORT, () => {

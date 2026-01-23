@@ -3,21 +3,30 @@
 const db = require('../../../models')
 const paginate = require('../../helpers/paginate')
 const buildOrder = require('../../helpers/order')
-const { Op } = require('sequelize');
+const { Op, Sequelize } = require('sequelize');
 
 const getResidents = async (req, res) => {
     try {
-        const { page, page_size, sort_by, sort_order } = req.query
+        const { page, page_size, sort_by, sort_order, global_search } = req.query
 
         const order = buildOrder({
             sortBy: sort_by,
             sortDirection: sort_order,
         })
 
+        const where = {}
+        if (global_search) {
+            where[Op.or] = [
+                { full_name: { [Op.like]: `%${global_search}%` } },
+                { nik: { [Op.like]: `%${global_search}%` } }
+            ]
+        }
+
         const result = await paginate(db.Resident, {
             page,
             pageSize: page_size,
             order,
+            where
         })
 
         return res.json(result)
