@@ -16,6 +16,17 @@ if (config.use_env_variable) {
   sequelize = new Sequelize(config.database, config.username, config.password, config);
 }
 
+// Inisialisasi model region SETELAH sequelize didefinisikan
+const Province = require('./region/province')(sequelize, Sequelize.DataTypes);
+const City = require('./region/city')(sequelize, Sequelize.DataTypes);
+const District = require('./region/district')(sequelize, Sequelize.DataTypes);
+const Village = require('./region/village')(sequelize, Sequelize.DataTypes);
+
+db.Province = Province;
+db.City = City;
+db.District = District;
+db.Village = Village;
+
 fs
   .readdirSync(__dirname)
   .filter(file => {

@@ -4,6 +4,8 @@ const db = require('../../../models')
 const paginate = require('../../helpers/paginate')
 const buildOrder = require('../../helpers/order')
 const { Op, Sequelize } = require('sequelize');
+const fs = require('fs');
+const path = require('path');
 
 const getResidents = async (req, res) => {
     try {
@@ -100,14 +102,6 @@ const createResident = async (req, res) => {
     }
 }
 
-/**
- * 
- * @param {*} req 
- * @param {*} res 
- * @returns 
- */
-const fs = require('fs');
-const path = require('path');
 const updateResident = async (req, res) => {
     try {
         const { id } = req.params;
